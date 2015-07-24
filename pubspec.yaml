@@ -1,0 +1,4 @@
+name: prerender
+dependencies:
+  browser: any
+  stagexl: "^0.12.0+1"
