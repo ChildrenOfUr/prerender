@@ -129,7 +129,7 @@ Future<Map> prerender(Map street) async {
     layer.applyCache(0,0, layerMap['w'], layerMap['h']);
     layer.children.toList().forEach((Bitmap child) => pool.recycle(child));
     dataUrl = new BitmapData.fromRenderTextureQuad(layer.cache).toDataUrl();
-    html.document.body.append(new html.ImageElement(src: dataUrl));
+//    html.document.body.append(new html.ImageElement(src: dataUrl));
     results['layers'][layerMap['name']] = dataUrl;
   }
   return results;
