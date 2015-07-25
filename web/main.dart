@@ -1,11 +1,12 @@
+library main;
 import 'dart:html';
 import 'dart:async';
 import 'dart:convert';
 import 'package:prerender/prerender.dart';
 import 'package:stagexl/stagexl.dart';
 
-List<String> streetsToParse = ['GA58KK7B9O522PC'];
-List<String> streetsParsed = [];
+part 'finished.dart';
+part 'todo.dart';
 
 main() async {
 	StageXL.stageOptions
@@ -19,10 +20,18 @@ main() async {
 	print('done!');
 }
 
+int i = 0;
 Future parseStreets() async {
+	if (streetsToParse.length == 2 && window.localStorage['toParse'] != null) {
+		streetsToParse = JSON.decode(window.localStorage['toParse']);
+	}
+
+	if (streetsParsed.isEmpty && window.localStorage['parsed'] != null) {
+		streetsParsed = JSON.decode(window.localStorage['parsed']);
+	}
+
 	while (streetsToParse.isNotEmpty) {
 		String currentTsid = streetsToParse.removeLast();
-		streetsParsed.add(currentTsid);
 		Map street = await getStreet(currentTsid);
 		String currentLabel = street['label'];
 		print('parsing $currentLabel');
@@ -34,6 +43,11 @@ Future parseStreets() async {
 		await HttpRequest.request('http://localhost:8181/uploadStreetRender', method: "POST",
 		                          requestHeaders: {"content-type": "application/json"},
 		                          sendData: JSON.encode(response));
+
+		streetsParsed.add(currentTsid);
+		window.localStorage['parsed'] = JSON.encode(streetsParsed);
+		window.localStorage['toParse'] = JSON.encode(streetsToParse);
+		i++;
 
 		List<Map> signposts = street['dynamic']['layers']['middleground']['signposts'];
 		signposts.forEach((Map signpost) {
@@ -47,6 +61,9 @@ Future parseStreets() async {
 				}
 			});
 		});
+
+		if ( i >= 25)
+			window.location.reload();
 	}
 }
 
