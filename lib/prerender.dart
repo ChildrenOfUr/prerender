@@ -1,4 +1,5 @@
 library prerender;
+
 import 'dart:html' as html;
 import 'dart:math' as Math;
 import 'dart:async';
@@ -7,12 +8,12 @@ import 'package:stagexl/stagexl.dart';
 ResourceManager RESOURCES = new ResourceManager();
 Stage STAGE = new Stage(new html.CanvasElement());
 
-Sprite layer = new Sprite();
 var loadOptions = new BitmapDataLoadOptions()
 	..corsEnabled = true;
 
 Map<String, BitmapData> deco = {};
 
+Sprite layer = new Sprite();
 BitmapPool pool = new BitmapPool();
 
 class BitmapPool {
@@ -65,76 +66,119 @@ Future<Map> prerender(Map street) async {
 				                        loadOptions);
 			}
 		}
-		await RESOURCES.load();
 
-		// Create and append decos
+		try {
+			await RESOURCES.load();
+		} catch (e) {
+			print('error: $e');
+		}
+
+		//Create and append decos
 		for (Map decoMap in decoList) {
-			if (!RESOURCES.containsBitmapData(decoMap['filename'])) {
+			List<String> failedNames = [];
+			RESOURCES.failedResources.forEach((ResourceManagerResource resource) => failedNames.add(resource.name));
+
+			if (!RESOURCES.containsBitmapData(decoMap['filename']) ||
+			    failedNames.contains(decoMap['filename'])) {
 				continue;
 			}
 
-			Bitmap printBitmap = pool.take();
-			layer.addChild(printBitmap);
-
-			printBitmap.bitmapData = RESOURCES.getBitmapData(decoMap['filename']);
-			printBitmap.pivotX = printBitmap.width / 2;
-			printBitmap.pivotY = printBitmap.height;
-			printBitmap.x = decoMap['x'];
-			printBitmap.y = decoMap['y'];
-
-			// Set width
-			if (decoMap['h_flip'] == true)
-				printBitmap.width = -decoMap['w'];
-			else
-				printBitmap.width = decoMap['w'];
-			// Set height
-			if (decoMap['v_flip'] == true)
-				printBitmap.height = -decoMap['h'];
-			else
-				printBitmap.height = decoMap['h'];
-
-			if (decoMap['r'] != null) {
-				printBitmap.rotation = decoMap['r'] * Math.PI / 180;
-			}
-
+			Deco deco = new Deco(decoMap);
 			if (layerMap['name'] == 'middleground') {
-				printBitmap.y += layerMap['h'];
-				printBitmap.x += layerMap['w'] ~/ 2;
+				//middleground has different layout needs
+				deco.y += layerMap['h'];
+				deco.x += layerMap['w'] ~/ 2;
 			}
-
-
-			// Apply filters to layer
-			layer.filters.clear();
-			ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
-			for (String filter in layerMap['filters'].keys) {
-				if (filter == 'tintColor') {
-					int color = layerMap['filters']['tintColor'];
-					num amount = layerMap['filters']['tintAmount'];
-					if (amount == null)
-						layerFilter.adjustColoration(color);
-					else
-						layerFilter.adjustColoration(color, amount / 255);
-				}
-				if (filter == 'brightness') {
-					layerFilter.adjustBrightness(layerMap['filters']['brightness'] / 255);
-				}
-				if (filter == 'saturation') {
-					layerFilter.adjustSaturation(layerMap['filters']['saturation'] / 255);
-				}
-				if (filter == 'contrast') {
-					layerFilter.adjustContrast(layerMap['filters']['contrast'] / 255);
-				}
-				if (filter == 'blur') {
-					layer.filters.add(new BlurFilter(layerMap['filters']['blur']));
-				}
-			}
-			layer.filters.add(layerFilter);
+			layer.addChild(deco);
 		}
+
+		applyFilters(layerMap);
 
 		layer.applyCache(0, 0, layerMap['w'], layerMap['h']);
 		dataUrl = new BitmapData.fromRenderTextureQuad(layer.cache).toDataUrl();
-		layer.children.toList().forEach((Bitmap child) => pool.recycle(child));
+//		html.ImageElement image = new html.ImageElement(src:dataUrl);
+//		image.style.position = 'absolute';
+//		image.style.zIndex = layerMap['z'].toString();
+//		html.document.body.append(image);
+		layer.removeChildren();
 		results['layers'][layerMap['name']] = dataUrl;
 	}
+//	html.document.body.style.background = 'lightblue';
 	return results;
+}
+
+void applyFilters(Map layerMap) {
+	// Apply filters to layer
+	layer.filters.clear();
+	ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
+	for (String filter in layerMap['filters'].keys) {
+		if (filter == 'tintColor') {
+			int color = layerMap['filters']['tintColor'];
+			int amount = layerMap['filters']['tintAmount'];
+			if(color != 0 && amount != null&& amount != 0) {
+				int hexColor = int.parse(amount.toRadixString(16)+color.toRadixString(16), radix:16);
+				layerFilter.adjustColoration(hexColor, amount / 90);
+			}
+		}
+		if (filter == 'brightness') {
+			layerFilter.adjustBrightness(layerMap['filters']['brightness'] / 255);
+		}
+		if (filter == 'saturation') {
+			layerFilter.adjustSaturation(layerMap['filters']['saturation'] / 255);
+		}
+		if (filter == 'contrast') {
+			layerFilter.adjustContrast(layerMap['filters']['contrast'] / 255);
+		}
+		if (filter == 'blur') {
+			print('${layerMap['z']}: ${layerMap['filters']['blur']}');
+			layer.filters.add(new BlurFilter(layerMap['filters']['blur']));
+		}
+	}
+	layer.filters.add(layerFilter);
+}
+
+List _decoPool = [];
+
+class Deco extends Bitmap {
+	Deco._();
+
+	factory Deco(Map def) {
+		Deco deco;
+		if (_decoPool.isNotEmpty)
+			deco = _decoPool.take(1).single;
+		else
+			deco = new Deco._();
+
+		deco.bitmapData = RESOURCES.getBitmapData(def['filename']);
+
+		deco.pivotX = deco.width/2;
+		deco.pivotY = deco.height;
+		deco.x = def['x'];
+		deco.y = def['y'];
+
+		// Set width
+		if (def['h_flip'] == true)
+			deco.width = -def['w'];
+		else
+			deco.width = def['w'];
+		// Set height
+		if (def['v_flip'] == true)
+			deco.height = -def['h'];
+		else
+			deco.height = def['h'];
+
+		if (def['r'] != null) {
+			deco.rotation = def['r'] * Math.PI/180;
+		}
+
+		return deco;
+	}
+
+	dispose() {
+		bitmapData.renderTexture.dispose();
+		_decoPool.add(this);
+//		if (parent != null);
+		parent.removeChild(this);
+		print('Decos in pool: ${_decoPool.length}');
+	}
 }
