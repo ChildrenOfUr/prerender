@@ -103,7 +103,13 @@ Future<Map> prerender(Map street) async {
 		layer.removeChildren();
 		results['layers'][layerMap['name']] = dataUrl;
 	}
-//	html.document.body.style.background = 'lightblue';
+//	html.DivElement background = new html.DivElement()
+//		..style.width = '3000px'
+//		..style.height = '1000px'
+//		..style.zIndex = '-100'
+//		..style.position = 'absolute'
+//		..style.background = 'linear-gradient(red,darkred)';
+//	html.document.body.append(background);
 	return results;
 }
 
@@ -111,26 +117,30 @@ void applyFilters(Map layerMap) {
 	// Apply filters to layer
 	layer.filters.clear();
 	ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
+	print('z: ${layerMap['z']}');
 	for (String filter in layerMap['filters'].keys) {
 		if (filter == 'tintColor') {
 			int color = layerMap['filters']['tintColor'];
 			int amount = layerMap['filters']['tintAmount'];
-			if(color != 0 && amount != null&& amount != 0) {
-				int hexColor = int.parse(amount.toRadixString(16)+color.toRadixString(16), radix:16);
+			print('color: $color, amount: $amount');
+			if (color != 0 && amount != null && amount != 0) {
+				int hexColor = int.parse(amount.toRadixString(16) + color.toRadixString(16), radix:16);
 				layerFilter.adjustColoration(hexColor, amount / 90);
 			}
 		}
 		if (filter == 'brightness') {
-			layerFilter.adjustBrightness(layerMap['filters']['brightness'] / 255);
+			print('brighness: ${layerMap['filters']['brightness']/ 100}');
+			layerFilter.adjustBrightness(layerMap['filters']['brightness']/255);
 		}
 		if (filter == 'saturation') {
-			layerFilter.adjustSaturation(layerMap['filters']['saturation'] / 255);
+			print('saturation: ${layerMap['filters']['saturation']/100}');
+			layerFilter.adjustSaturation(layerMap['filters']['saturation']/255);
 		}
 		if (filter == 'contrast') {
-			layerFilter.adjustContrast(layerMap['filters']['contrast'] / 255);
+			print('contrast: ${layerMap['filters']['contrast']/100}');
+			layerFilter.adjustContrast(layerMap['filters']['contrast']/255);
 		}
 		if (filter == 'blur') {
-			print('${layerMap['z']}: ${layerMap['filters']['blur']}');
 			layer.filters.add(new BlurFilter(layerMap['filters']['blur']));
 		}
 	}
@@ -151,7 +161,7 @@ class Deco extends Bitmap {
 
 		deco.bitmapData = RESOURCES.getBitmapData(def['filename']);
 
-		deco.pivotX = deco.width/2;
+		deco.pivotX = deco.width / 2;
 		deco.pivotY = deco.height;
 		deco.x = def['x'];
 		deco.y = def['y'];
@@ -168,7 +178,7 @@ class Deco extends Bitmap {
 			deco.height = def['h'];
 
 		if (def['r'] != null) {
-			deco.rotation = def['r'] * Math.PI/180;
+			deco.rotation = def['r'] * Math.PI / 180;
 		}
 
 		return deco;
