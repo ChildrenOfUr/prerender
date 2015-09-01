@@ -117,27 +117,22 @@ void applyFilters(Map layerMap) {
 	// Apply filters to layer
 	layer.filters.clear();
 	ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
-	print('z: ${layerMap['z']}');
 	for (String filter in layerMap['filters'].keys) {
 		if (filter == 'tintColor') {
 			int color = layerMap['filters']['tintColor'];
 			int amount = layerMap['filters']['tintAmount'];
-			print('color: $color, amount: $amount');
 			if (color != 0 && amount != null && amount != 0) {
 				int hexColor = int.parse(amount.toRadixString(16) + color.toRadixString(16), radix:16);
 				layerFilter.adjustColoration(hexColor, amount / 90);
 			}
 		}
 		if (filter == 'brightness') {
-			print('brighness: ${layerMap['filters']['brightness']/ 100}');
 			layerFilter.adjustBrightness(layerMap['filters']['brightness']/255);
 		}
 		if (filter == 'saturation') {
-			print('saturation: ${layerMap['filters']['saturation']/100}');
 			layerFilter.adjustSaturation(layerMap['filters']['saturation']/255);
 		}
 		if (filter == 'contrast') {
-			print('contrast: ${layerMap['filters']['contrast']/100}');
 			layerFilter.adjustContrast(layerMap['filters']['contrast']/255);
 		}
 		if (filter == 'blur') {
@@ -187,8 +182,8 @@ class Deco extends Bitmap {
 	dispose() {
 		bitmapData.renderTexture.dispose();
 		_decoPool.add(this);
-//		if (parent != null);
-		parent.removeChild(this);
-		print('Decos in pool: ${_decoPool.length}');
+		if (parent != null) {
+			parent.removeChild(this);
+		}
 	}
 }

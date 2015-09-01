@@ -24,22 +24,15 @@ main() async {
 int i = 0;
 
 Future parseStreets() async {
-	if (streetsToParse.length == 2 && window.localStorage['toParse'] != null) {
-		streetsToParse = JSON.decode(window.localStorage['toParse']);
-	}
+//	if (streetsToParse.length == 2 && window.localStorage['toParse'] != null) {
+//		streetsToParse = JSON.decode(window.localStorage['toParse']);
+//	}
+//
+//	if (streetsParsed.isEmpty && window.localStorage['parsed'] != null) {
+//		streetsParsed = JSON.decode(window.localStorage['parsed']);
+//	}
 
-	if (streetsParsed.isEmpty && window.localStorage['parsed'] != null) {
-		streetsParsed = JSON.decode(window.localStorage['parsed']);
-	}
-
-
-//    hell
-//    List<String> streetsToParse = ['LA5PV4T79OE2AOA'];
-//    List<String> streetsToParse = ['LA5PPFP86NF2FOS'];
-//    jantik joj
-//    List<String> streetsToParse = ['LA517MT2M262D0F'];
-//    jal
-//    List<String> streetsToParse = ['LUV270LMU8A3UCB'];
+	List<String> streetsToParse = [];
 
 	while (streetsToParse.isNotEmpty) {
 		String currentTsid = streetsToParse.removeLast();
