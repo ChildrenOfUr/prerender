@@ -1,10 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <script type="application/dart" src="main.dart"></script>
-    <script type="application/javascript" src="packages/browser/dart.js"></script>
+<!-- Loading animation container -->
+<div id="LoadingDialog" class="loading" hidden>
+    <!-- We make this div spin -->
+    <div class="spinner">
+        <!-- Mask of the quarter of circle -->
+        <div class="mask">
+            <!-- Inner masked circle -->
+            <div class="maskedCircle"></div>
+        </div>
+    </div>
+    <span id="CurrentRender"></span>
+</div>
+
+<div>TSIDs to update (one per line)</div>
+<textarea id="StreetList"></textarea><br>
+<button id="DoIt">Render Streets</button>
+
+<script type="application/dart" src="main.dart"></script>
+<script type="application/javascript" src="packages/browser/dart.js"></script>
 </body>
 </html>

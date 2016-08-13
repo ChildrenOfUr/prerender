@@ -62,7 +62,7 @@ Future<Map> prerender(Map street) async {
 		for (Map decoMap in decoList) {
 			if (!RESOURCES.containsBitmapData(decoMap['filename'])) {
 				RESOURCES.addBitmapData(decoMap['filename'],
-				                        'http://childrenofur.com/locodarto/scenery/' + decoMap['filename'] + '.png',
+				                        'http://childrenofur.com/locodarto/scenery/' + decoMap['filename'],
 				                        loadOptions);
 			}
 		}
@@ -70,7 +70,7 @@ Future<Map> prerender(Map street) async {
 		try {
 			await RESOURCES.load();
 		} catch (e) {
-			print('error: $e');
+//			print('error: $e');
 		}
 
 		//Create and append decos
