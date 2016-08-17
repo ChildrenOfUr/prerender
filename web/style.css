@@ -8,6 +8,15 @@
     to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }
 
+#LayerWindow {
+    width: calc(100% - 16px);
+    height: calc(100% - 8px);
+    max-height: 1000px;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
 /* Loading animation container */
 .loading {
     position: absolute;

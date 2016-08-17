@@ -25,6 +25,15 @@ main() async {
 		querySelector("#LoadingDialog").hidden = false;
 		parseStreets(streets);
 	});
+
+	resize();
+	window.onResize.listen((_) => resize());
+}
+
+resize() {
+	int topHeight = querySelector('#TopBit').clientHeight;
+	int remaining = document.body.clientHeight - topHeight - 50;
+	querySelector('#LayerWindow').style.height = '${remaining}px';
 }
 
 Future parseStreets(List<String> streetsToParse) async {
@@ -73,7 +82,8 @@ Future<Map> getStreet(String tsid) async {
 	if (tsid.startsWith('L')) {
 		tsid = tsid.replaceFirst('L', 'G');
 	}
-	String url = "https://rawgit.com/ChildrenOfUr/CAT422-glitch-location-viewer/dev/locations/$tsid.json";
+	String url = 
+"https://rawgit.com/ChildrenOfUr/CAT422-glitch-location-viewer/master/locations/$tsid.json";
 	String response = await HttpRequest.getString(url);
 
 	Map street = JSON.decode(response);
