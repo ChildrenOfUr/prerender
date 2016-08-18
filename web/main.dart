@@ -219,7 +219,7 @@ Future<bool> previewStreet(Map street) async {
 
 	for (Map layer in street['dynamic']['layers'].values) {
 		String layerName = layer['name'].replaceAll(' ', '_');
-		String url = 'http://childrenofur.com/assets/streetLayers/dev/$tsid/$layerName.png';
+		String url = 'http://childrenofur.com/assets/streetLayers/dev/$tsid/$layerName.png?${new DateTime.now().millisecondsSinceEpoch}';
 		ImageElement image = new ImageElement(src:url);
 		image.style.position = 'absolute';
 		image.style.zIndex = layer['z'].toString();
@@ -269,7 +269,7 @@ render() async {
 
 Future<Map> getStreet(String tsid) async {
 	String url = 
-"https://rawgit.com/ChildrenOfUr/CAT422-glitch-location-viewer/dev/locations/$tsid.json";
+"https://rawgit.com/ChildrenOfUr/CAT422-glitch-location-viewer/dev/locations/$tsid.json?${new DateTime.now()}";
 	String response = await HttpRequest.getString(url);
 
 	Map street = JSON.decode(response);

@@ -62,7 +62,7 @@ Future<Map> prerender(Map street) async {
 		for (Map decoMap in decoList) {
 			if (!RESOURCES.containsBitmapData(decoMap['filename'])) {
 				RESOURCES.addBitmapData(decoMap['filename'],
-				                        'http://childrenofur.com/locodarto/scenery/' + decoMap['filename'],
+				                        'http://childrenofur.com/locodarto/scenery/${decoMap['filename']}?${new DateTime.now()}',
 				                        loadOptions);
 			}
 		}
@@ -119,9 +119,9 @@ void applyFilters(Map layerMap) {
 		if (filter == 'brightness') {
 			layerFilter.adjustBrightness(layerMap['filters']['brightness']/255);
 		}
-		if (filter == 'saturation') {
-			layerFilter.adjustSaturation(layerMap['filters']['saturation']/255);
-		}
+//		if (filter == 'saturation') {
+//			layerFilter.adjustSaturation(layerMap['filters']['saturation']/255);
+//		}
 		if (filter == 'contrast') {
 			layerFilter.adjustContrast(layerMap['filters']['contrast']/255);
 		}
