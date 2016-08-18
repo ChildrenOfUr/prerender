@@ -108,14 +108,14 @@ void applyFilters(Map layerMap) {
 	layer.filters.clear();
 	ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
 	for (String filter in layerMap['filters'].keys) {
-		if (filter == 'tintColor') {
-			int color = layerMap['filters']['tintColor'];
-			int amount = layerMap['filters']['tintAmount'];
-			if (color != 0 && amount != null && amount != 0) {
-				int hexColor = int.parse(amount.toRadixString(16) + color.toRadixString(16), radix:16);
-				layerFilter.adjustColoration(hexColor, amount / 90);
-			}
-		}
+//		if (filter == 'tintColor') {
+//			int color = layerMap['filters']['tintColor'];
+//			int amount = layerMap['filters']['tintAmount'];
+//			if (color != 0 && amount != null && amount != 0) {
+//				int hexColor = int.parse(amount.toRadixString(16) + color.toRadixString(16), radix:16);
+//				layerFilter.adjustColoration(hexColor, amount / 90);
+//			}
+//		}
 		if (filter == 'brightness') {
 			layerFilter.adjustBrightness(layerMap['filters']['brightness']/255);
 		}
