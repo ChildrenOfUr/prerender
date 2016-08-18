@@ -53,38 +53,6 @@ Future<Map> prerender(Map street) async {
 		'layers': {}
 	};
 
-	Rectangle bounds = new Rectangle(street['dynamic']['l'],
-			               			 street['dynamic']['t'],
-			              			 street['dynamic']['l'].abs() + street['dynamic']['r'].abs(),
-			               			(street['dynamic']['t'] - street['dynamic']['b']).abs());
-
-	int groundY = -(street['dynamic']['ground_y'] as num).abs();
-
-	DivElement layers = querySelector('#LayerWindow');
-
-	/* //// Gradient Canvas //// */
-	DivElement gradientCanvas = new DivElement();
-
-	// Color the gradientCanvas
-	String top = street['gradient']['top'];
-	String bottom = street['gradient']['bottom'];
-
-	gradientCanvas
-		..classes.add('streetcanvas')
-		..id = 'gradient'
-		..attributes['ground_y'] = "0"
-		..attributes['width'] = bounds.width.toString()
-		..attributes['height'] = bounds.height.toString();
-	gradientCanvas.style
-		..zIndex = (-100).toString()
-		..width = bounds.width.toString() + "px"
-		..height = bounds.height.toString() + "px"
-		..position = 'absolute'
-		..background = 'linear-gradient(to bottom, #$top, #$bottom)';
-
-	// Append it to the screen*/
-	layers.append(gradientCanvas);
-
 	for (Map layerMap in street['dynamic']['layers'].values) {
 		// Sort decos by z value
 		List decoList = new List.from(layerMap['decos'])
@@ -128,10 +96,6 @@ Future<Map> prerender(Map street) async {
 
 		layer.applyCache(0, 0, layerMap['w'], layerMap['h']);
 		dataUrl = new BitmapData.fromRenderTextureQuad(layer.cache).toDataUrl();
-		ImageElement image = new ImageElement(src:dataUrl);
-		image.style.position = 'absolute';
-		image.style.zIndex = layerMap['z'].toString();
-		layers.append(image);
 		layer.removeChildren();
 		results['layers'][layerMap['name']] = dataUrl;
 	}
