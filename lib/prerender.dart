@@ -106,8 +106,8 @@ Future<Map> prerender(Map street) async {
 void applyFilters(Map layerMap) {
 	// Apply filters to layer
 	layer.filters.clear();
-	ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
 	for (String filter in layerMap['filters'].keys) {
+		ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
 //		if (filter == 'tintColor') {
 //			int color = layerMap['filters']['tintColor'];
 //			int amount = layerMap['filters']['tintAmount'];
@@ -119,17 +119,18 @@ void applyFilters(Map layerMap) {
 		if (filter == 'brightness') {
 			layerFilter.adjustBrightness(layerMap['filters']['brightness']/255);
 		}
-//		if (filter == 'saturation') {
-//			layerFilter.adjustSaturation(layerMap['filters']['saturation']/255);
-//		}
+		if (filter == 'saturation') {
+			layerFilter.adjustSaturation(layerMap['filters']['saturation']/255);
+		}
 		if (filter == 'contrast') {
 			layerFilter.adjustContrast(layerMap['filters']['contrast']/255);
 		}
 		if (filter == 'blur') {
 			layer.filters.add(new BlurFilter(layerMap['filters']['blur']));
 		}
+
+		layer.filters.add(layerFilter);
 	}
-	layer.filters.add(layerFilter);
 }
 
 List _decoPool = [];
