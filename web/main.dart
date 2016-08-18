@@ -269,7 +269,7 @@ render() async {
 
 Future<Map> getStreet(String tsid) async {
 	String url = 
-"https://rawgit.com/ChildrenOfUr/CAT422-glitch-location-viewer/master/locations/$tsid.json";
+"https://rawgit.com/ChildrenOfUr/CAT422-glitch-location-viewer/dev/locations/$tsid.json";
 	String response = await HttpRequest.getString(url);
 
 	Map street = JSON.decode(response);
