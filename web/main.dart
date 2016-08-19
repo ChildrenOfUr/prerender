@@ -71,6 +71,7 @@ main() async {
 		List<String> streets = streetList.value.split('\n');
 		streets.removeWhere((String street) => street.isEmpty);
 		print('$streets : ${streets.length}');
+		layers.children.clear();
 		parseStreets(streets);
 	});
 

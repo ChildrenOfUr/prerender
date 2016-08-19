@@ -107,29 +107,39 @@ void applyFilters(Map layerMap) {
 	// Apply filters to layer
 	layer.filters.clear();
 	for (String filter in layerMap['filters'].keys) {
-		ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
-//		if (filter == 'tintColor') {
-//			int color = layerMap['filters']['tintColor'];
-//			int amount = layerMap['filters']['tintAmount'];
-//			if (color != 0 && amount != null && amount != 0) {
-//				int hexColor = int.parse(amount.toRadixString(16) + color.toRadixString(16), radix:16);
-//				layerFilter.adjustColoration(hexColor, amount / 90);
-//			}
-//		}
-		if (filter == 'brightness') {
-			layerFilter.adjustBrightness(layerMap['filters']['brightness']/255);
+//		ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
+		if (filter == 'contrast') {
+			ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
+			layerFilter.adjustContrast(layerMap['filters']['contrast']/100);
+			layer.filters.add(layerFilter);
 		}
 		if (filter == 'saturation') {
-			layerFilter.adjustSaturation(layerMap['filters']['saturation']/255);
+			ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
+			layerFilter.adjustSaturation(layerMap['filters']['saturation']/100);
+			layer.filters.add(layerFilter);
 		}
-		if (filter == 'contrast') {
-			layerFilter.adjustContrast(layerMap['filters']['contrast']/255);
-		}
-		if (filter == 'blur') {
-			layer.filters.add(new BlurFilter(layerMap['filters']['blur']));
+		if (filter == 'tintColor') {
+			int color = layerMap['filters']['tintColor'];
+			int amount = layerMap['filters']['tintAmount'];
+			if (color != 0 && amount != null && amount != 0) {
+//				int hexColor = int.parse(color.toRadixString(16), radix:16);
+				ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
+				layerFilter.adjustColoration(layerMap['filters']['tintColor'], amount / 100);
+				layer.filters.add(layerFilter);
+			}
 		}
 
-		layer.filters.add(layerFilter);
+		if (filter == 'brightness') {
+			ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
+			layerFilter.adjustBrightness(layerMap['filters']['brightness']/255);
+			layer.filters.add(layerFilter);
+		}
+
+		if (filter == 'blur') {
+			layer.filters.add(new BlurFilter(layerMap['filters']['blur'], layerMap['filters']['blur']));
+		}
+
+//		layer.filters.add(layerFilter);
 	}
 }
 
