@@ -82,18 +82,25 @@ main() async {
 			return;
 		}
 
-		File file = fileUpload.files.first;
-		FileReader fileReader = new FileReader();
-		fileReader.onLoad.first.then((ProgressEvent e) {
+		querySelector("#LoadingDialog").hidden = false;
+
+		await Future.forEach(fileUpload.files, (File file) async {
+			FileReader fileReader = new FileReader();
+			querySelector("#CurrentRender").text = 'Uploading ${file.name}';
+			print('uploading ${file.name}');
+
+			fileReader.readAsDataUrl(file);
+			await fileReader.onLoad.first;
+
 			FormData fd = new FormData();
 			fd.append('token', redstoneToken);
 			fd.appendBlob('newSceneryFile', file, file.name);
-
-			HttpRequest req = new HttpRequest();
-			req.open("POST",'http://robertmcdermot.com:8181/uploadNewSceneryImage');
-			req.send(fd);
+			await HttpRequest.request('http://robertmcdermot.com:8181/uploadNewSceneryImage',
+				                      method: 'POST', sendData: fd);
 		});
-		fileReader.readAsDataUrl(file);
+
+		querySelector("#LoadingDialog").hidden = true;
+
 	});
 
 	resize();
