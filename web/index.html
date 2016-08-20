@@ -19,16 +19,21 @@
 </div>
 
 <div id="TopBit">
-    <span>
+    <div>
         <div>TSIDs to update (one per line)</div>
         <textarea id="StreetList"></textarea><br>
         <button id="DoIt">Render Streets</button>
-    </span>
-    <span id="LooksGood" hidden>
+    </div>
+    <div id="LooksGood" hidden>
         Look good?
         <button id="YesButton">Yes</button>
         <button id="NoButton">No</button>
-    </span>
+    </div>
+    <div>
+        <div>Upload a new/updated piece of scenery</div>
+        <input type="file" id="FileToUpload">
+        <button id="UploadScenery">Upload</button>
+    </div>
 </div>
 
 <div id="LayerWindow"></div>

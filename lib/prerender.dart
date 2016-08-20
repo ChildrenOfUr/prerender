@@ -59,11 +59,13 @@ Future<Map> prerender(Map street) async {
 			..sort((Map A, Map B) => A['z'].compareTo(B['z']));
 
 		//load the bitmaps
+		int timestamp = new DateTime.now().millisecondsSinceEpoch;
 		for (Map decoMap in decoList) {
-			if (!RESOURCES.containsBitmapData(decoMap['filename'])) {
-				RESOURCES.addBitmapData(decoMap['filename'],
-				                        'http://childrenofur.com/locodarto/scenery/${decoMap['filename']}?${new DateTime.now()}',
-				                        loadOptions);
+			String resourceName = '${decoMap['filename']}_${decoMap['w']}_${decoMap['h']}';
+			if (!RESOURCES.containsBitmapData(resourceName)) {
+				String url = 'http://cou.robertmcdermot.com/get_sized_image.php';
+				url += '?filename=${decoMap['filename']}&width=${decoMap['w']}&height=${decoMap['h']}&time=$timestamp';
+				RESOURCES.addBitmapData(resourceName, url, loadOptions);
 			}
 		}
 
@@ -78,8 +80,9 @@ Future<Map> prerender(Map street) async {
 			List<String> failedNames = [];
 			RESOURCES.failedResources.forEach((ResourceManagerResource resource) => failedNames.add(resource.name));
 
-			if (!RESOURCES.containsBitmapData(decoMap['filename']) ||
-			    failedNames.contains(decoMap['filename'])) {
+			String resourceName = '${decoMap['filename']}_${decoMap['w']}_${decoMap['h']}';
+			if (!RESOURCES.containsBitmapData(resourceName) ||
+			    failedNames.contains(resourceName)) {
 				continue;
 			}
 
@@ -155,7 +158,8 @@ class Deco extends Bitmap {
 		else
 			deco = new Deco._();
 
-		deco.bitmapData = RESOURCES.getBitmapData(def['filename']);
+		String resourceName = '${def['filename']}_${def['w']}_${def['h']}';
+		deco.bitmapData = RESOURCES.getBitmapData(resourceName);
 
 		deco.pivotX = deco.width / 2;
 		deco.pivotY = deco.height;

@@ -75,6 +75,27 @@ main() async {
 		parseStreets(streets);
 	});
 
+	querySelector('#UploadScenery').onClick.listen((_) async {
+		FileUploadInputElement fileUpload = querySelector('#FileToUpload');
+		if (fileUpload.files.length == 0) {
+			print('no files to upload');
+			return;
+		}
+
+		File file = fileUpload.files.first;
+		FileReader fileReader = new FileReader();
+		fileReader.onLoad.first.then((ProgressEvent e) {
+			FormData fd = new FormData();
+			fd.append('token', redstoneToken);
+			fd.appendBlob('newSceneryFile', file, file.name);
+
+			HttpRequest req = new HttpRequest();
+			req.open("POST",'http://robertmcdermot.com:8181/uploadNewSceneryImage');
+			req.send(fd);
+		});
+		fileReader.readAsDataUrl(file);
+	});
+
 	resize();
 	window.onResize.listen((_) => resize());
 
@@ -152,10 +173,10 @@ Future parseStreets(List<String> streetsToParse) async {
 		//Now add the files to the page so we can preview it for QA
 		if (await previewStreet(street)) {
 			//now transfer the street from the dev folder to the live folder
-			String url = 'http://childrenofur.com/assets/make_street_layers_live.php';
-			HttpRequest request = await HttpRequest.postFormData(url,
-				{'redstoneToken': redstoneToken, 'tsid': currentTsid.replaceFirst('G','L')});
-			print(request.responseText);
+			Map data = {'redstoneToken': redstoneToken, 'tsid': currentTsid};
+			HttpRequest request = await HttpRequest.request('http://robertmcdermot.com:8181/confirmStreetRender', method: "POST",
+				requestHeaders: {"content-type": "application/json"},
+				sendData: JSON.encode(data));
 		}
 
 //		streetsParsed.add(currentTsid);
@@ -220,7 +241,7 @@ Future<bool> previewStreet(Map street) async {
 
 	for (Map layer in street['dynamic']['layers'].values) {
 		String layerName = layer['name'].replaceAll(' ', '_');
-		String url = 'http://childrenofur.com/assets/streetLayers/dev/$tsid/$layerName.png?${new DateTime.now().millisecondsSinceEpoch}';
+		String url = 'http://cou.robertmcdermot.com/streetLayers/$tsid/$layerName.png?${new DateTime.now().millisecondsSinceEpoch}';
 		ImageElement image = new ImageElement(src:url);
 		image.style.position = 'absolute';
 		image.style.zIndex = layer['z'].toString();
