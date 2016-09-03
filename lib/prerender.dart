@@ -110,7 +110,6 @@ void applyFilters(Map layerMap) {
 	// Apply filters to layer
 	layer.filters.clear();
 	for (String filter in layerMap['filters'].keys) {
-//		ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
 		if (filter == 'contrast') {
 			ColorMatrixFilter layerFilter = new ColorMatrixFilter.identity();
 			layerFilter.adjustContrast(layerMap['filters']['contrast']/100);
@@ -141,8 +140,6 @@ void applyFilters(Map layerMap) {
 		if (filter == 'blur') {
 			layer.filters.add(new BlurFilter(layerMap['filters']['blur'], layerMap['filters']['blur']));
 		}
-
-//		layer.filters.add(layerFilter);
 	}
 }
 
