@@ -171,7 +171,7 @@ Future parseStreets(List<String> streetsToParse) async {
 		response['redstoneToken'] = redstoneToken;
 
 		//now upload renderedStreet
-		HttpRequest request = await HttpRequest.request('http://robertmcdermot.com:8181/uploadStreetRender', method: "POST",
+		HttpRequest request = await HttpRequest.request('https://robertmcdermot.com:8181/uploadStreetRender', method: "POST",
 			requestHeaders: {"content-type": "application/json"},
 			sendData: JSON.encode(response));
 
@@ -181,7 +181,7 @@ Future parseStreets(List<String> streetsToParse) async {
 		if (await previewStreet(street)) {
 			//now transfer the street from the dev folder to the live folder
 			Map data = {'redstoneToken': redstoneToken, 'tsid': currentTsid};
-			HttpRequest request = await HttpRequest.request('http://robertmcdermot.com:8181/confirmStreetRender', method: "POST",
+			HttpRequest request = await HttpRequest.request('https://robertmcdermot.com:8181/confirmStreetRender', method: "POST",
 				requestHeaders: {"content-type": "application/json"},
 				sendData: JSON.encode(data));
 		}
