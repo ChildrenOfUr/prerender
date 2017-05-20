@@ -63,7 +63,7 @@ Future<Map> prerender(Map street) async {
 		for (Map decoMap in decoList) {
 			String resourceName = '${decoMap['filename']}_${decoMap['w']}_${decoMap['h']}';
 			if (!RESOURCES.containsBitmapData(resourceName)) {
-				String url = 'http://cou.robertmcdermot.com/get_sized_image.php';
+				String url = 'https://cou.robertmcdermot.com/get_sized_image.php';
 				url += '?filename=${decoMap['filename']}&width=${decoMap['w']}&height=${decoMap['h']}&time=$timestamp';
 				RESOURCES.addBitmapData(resourceName, url, loadOptions);
 			}
