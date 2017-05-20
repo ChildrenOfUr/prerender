@@ -248,7 +248,7 @@ Future<bool> previewStreet(Map street) async {
 
 	for (Map layer in street['dynamic']['layers'].values) {
 		String layerName = layer['name'].replaceAll(' ', '_');
-		String url = 'http://cou.robertmcdermot.com/streetLayers/$tsid/$layerName.png?${new DateTime.now().millisecondsSinceEpoch}';
+		String url = 'https://cou.robertmcdermot.com/streetLayers/$tsid/$layerName.png?${new DateTime.now().millisecondsSinceEpoch}';
 		ImageElement image = new ImageElement(src:url);
 		image.style.position = 'absolute';
 		image.style.zIndex = layer['z'].toString();
