@@ -95,7 +95,7 @@ main() async {
 			FormData fd = new FormData();
 			fd.append('token', redstoneToken);
 			fd.appendBlob('newSceneryFile', file, file.name);
-			await HttpRequest.request('http://robertmcdermot.com:8181/uploadNewSceneryImage',
+			await HttpRequest.request('https://robertmcdermot.com:8181/uploadNewSceneryImage',
 				                      method: 'POST', sendData: fd);
 		});
 
