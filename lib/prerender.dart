@@ -83,6 +83,7 @@ Future<Map> prerender(Map street) async {
 			String resourceName = '${decoMap['filename']}_${decoMap['w']}_${decoMap['h']}';
 			if (!RESOURCES.containsBitmapData(resourceName) ||
 			    failedNames.contains(resourceName)) {
+				(querySelector("#missingResources") as TextAreaElement).value += '${decoMap["filename"]}\n';
 				continue;
 			}
 

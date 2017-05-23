@@ -61,3 +61,7 @@
     -webkit-animation: spin 1s infinite linear;
     animation: spin 1s infinite linear;
 }
+
+#missingResources {
+    height: 5em;
+}
